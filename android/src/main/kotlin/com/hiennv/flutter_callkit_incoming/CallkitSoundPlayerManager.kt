@@ -106,11 +106,14 @@ class CallkitSoundPlayerManager(private val context: Context) {
         val pattern = longArrayOf(0L, 1000L, 1000L)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val audioAttrs = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .setLegacyStreamType(AudioManager.STREAM_RING)
-                .build()
+        val audioAttrs = AudioAttributes.Builder()
+    // Меняем тип контента на MUSIC (музыка/медиа)
+    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+    // Меняем использование на USAGE_MEDIA (гарантирует обход ограничений Telecom на Xiaomi)
+    .setUsage(AudioAttributes.USAGE_MEDIA)
+    // Принудительно задаем легальный стрим для медиа-плеера (вместо STREAM_RING)
+    .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+    .build()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 vibrator?.vibrate(
