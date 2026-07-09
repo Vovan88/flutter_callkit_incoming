@@ -143,12 +143,15 @@ class CallkitSoundPlayerManager(private val context: Context) {
         try {
             ringtone = RingtoneManager.getRingtone(context, uri)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                val attribution = AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                    .setLegacyStreamType(AudioManager.STREAM_RING)
-                    .build()
-                ringtone?.setAudioAttributes(attribution)
+            val attribution = AudioAttributes.Builder()
+    // Переключаем тип на музыку, чтобы обойти блокировки звонилки Xiaomi
+    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+    // Выставляем использование как медиа-ресурс (пойдет через внешний динамик)
+    .setUsage(AudioAttributes.USAGE_MEDIA)
+    // Задаем легальный стрим для медиа-потока вместо проблемного STREAM_RING
+    .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+    .build()
+ringtone?.setAudioAttributes(attribution)
             } else {
                 ringtone?.streamType = AudioManager.STREAM_RING
             }
